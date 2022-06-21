@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded' , ()=>{
     const grid = document.querySelector('.grid');
     const scoreDisplay = document.getElementById('score');
     const width = 8;
+    let swaped = false;
     const sqaures = [];
     let score=0;
     const candyColors = [
@@ -39,19 +40,31 @@ document.addEventListener('DOMContentLoaded' , ()=>{
 
     function dragStart(){
         colorBeingDragged = this.style.backgroundImage;
-        console.log(colorBeingDragged);
+        // console.log(colorBeingDragged);
         IdDragged = parseInt(this.id);
         // console.log(this.id, 'dragStart');
     }
     function dragEnd(){
+        swaped = false;
         let validMoves = [
             IdDragged -1 ,IdDragged +1 , IdDragged +width ,IdDragged -width
         ];
         let validMove = validMoves.includes(IdReplaced);
+        checkColForFour();
+        checkColForThree();
+        checkRowForFour();
+        checkRowForThree();
+        // console.log(swaped);
         if(IdReplaced && validMove){
-            IdReplaced = null;
+            if(swaped)
+                IdReplaced = null;
+            else{
+                sqaures[IdDragged].style.backgroundImage = colorBeingDragged;
+                sqaures[IdReplaced].style.backgroundImage = colorBeingReplaced;
+
+            }
         }
-        else if(IdReplaced && !validMove){
+        else if(IdReplaced && !validMove ){
             sqaures[IdDragged].style.backgroundImage = colorBeingDragged;
             sqaures[IdReplaced].style.backgroundImage = colorBeingReplaced;
         }
@@ -110,6 +123,7 @@ document.addEventListener('DOMContentLoaded' , ()=>{
                 score+=3;
                 scoreDisplay.innerHTML = score;
                 rowOfThree.forEach(index => {sqaures[index].style.backgroundImage = ''});
+                swaped = true;
             }
         }
     }
@@ -122,8 +136,8 @@ document.addEventListener('DOMContentLoaded' , ()=>{
             if(ColOfThree.every(index => sqaures[index].style.backgroundImage === decidedColor && !isBlank)){
                 score+=3;
                 scoreDisplay.innerHTML = score;
-
                 ColOfThree.forEach(index => {sqaures[index].style.backgroundImage = ''});
+                swaped = true;
             }
         }
     }
@@ -144,6 +158,8 @@ document.addEventListener('DOMContentLoaded' , ()=>{
                 scoreDisplay.innerHTML = score;
 
                 rowOfFour.forEach(index => {sqaures[index].style.backgroundImage = ''});
+                swaped = true;
+
             }
         }
     }
@@ -158,6 +174,7 @@ document.addEventListener('DOMContentLoaded' , ()=>{
                 score+=4;
                 scoreDisplay.innerHTML = score;
                 ColOfFour.forEach(index => {sqaures[index].style.backgroundImage = ''});
+                swaped = true;
             }
         }
     }
